@@ -64,6 +64,7 @@ public class GUIController implements Initializable{
 		PostalFileManager fManager = new PostalFileManager();
 		
 		try {
+			workingFile = null;
 			workingFile = chooser.showOpenDialog(refStage);
 			fManager.validateExtension(workingFile);
 			eManager.validate(workingFile);
