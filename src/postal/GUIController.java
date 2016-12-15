@@ -1,19 +1,22 @@
 package postal;
 
-
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import javafx.fxml.FXMLLoader;
+import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.stage.Stage;
 
 public class GUIController implements Initializable{
-	final static String xmlFile = "main.fxml";
+	final static String xmlFile = "PostalGUI.fxml";
 	final static String programTitle = "郵政列印";
+	@FXML Button buttonGetEmpty, buttonBrowse, buttonGetLabel;
+	
+
 	static Stage refStage = null;
+	
+	
 	
 	/**
 	 * Disables the buttons.
@@ -29,21 +32,16 @@ public class GUIController implements Initializable{
 	private void disalbeButtons(Boolean disableRun, Boolean disableView) {
 	
 	}
+	
+	public void actionGetLabel(){
+		System.out.println("GetLable");
+	}	
+	public void actionBrowse(){
+		System.out.println("Browse");
 
-	/**
-	 * This method load the xml file and shows it.
-	 */
-	public static boolean createMainScreen(Stage primaryStage) {
-		try {
-			System.out.println("Program starts");
-			Parent root = FXMLLoader.load(Main.class.getResource(xmlFile));
-			primaryStage.setTitle(programTitle);
-			primaryStage.setScene(new Scene(root));
-			primaryStage.show();
-			return true;
-		} catch (Exception e) {
-			e.printStackTrace();
-			return false;
-		}
+	}
+	public void actionGetEmpty(){
+		System.out.println("GetEmpty");
+
 	}
 }

@@ -1,6 +1,9 @@
 package postal;
 
 import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 public class Main extends Application{
@@ -11,10 +14,15 @@ public class Main extends Application{
 	
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		if (GUIController.createMainScreen(primaryStage)) {
+		try {
+			System.out.println("Program begins");
+			Parent root = FXMLLoader.load(getClass().getResource("PostalGUI.fxml"));
+			primaryStage.setTitle(GUIController.programTitle);
+			primaryStage.setScene(new Scene(root));
+			primaryStage.show();
 			GUIController.refStage = primaryStage;
-		} else {
-			System.exit(0);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 
