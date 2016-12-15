@@ -48,5 +48,10 @@ public class PostalExcelManager extends ExcelManager {
 		wb.close();
 		return wb.getSheetAt(0);		
 	}
+	
+	public ArrayList<String> getData(File workingFile, Integer atRow) throws Exception{
+		XSSFSheet sheet = getSheet(workingFile);
+		return getCellAsArrayString(sheet.getRow(atRow), 1, 10);
+	}
 
 }
