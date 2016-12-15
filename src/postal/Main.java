@@ -16,8 +16,8 @@ public class Main extends Application{
 	public void start(Stage primaryStage) throws Exception {
 		try {
 			System.out.println("Program begins");
-			Parent root = FXMLLoader.load(getClass().getResource("PostalGUI.fxml"));
-			primaryStage.setTitle(GUIController.programTitle);
+			Parent root = FXMLLoader.load(getClass().getResource(GUIController.XMLFILE));
+			primaryStage.setTitle(GUIController.TITLE);
 			primaryStage.setScene(new Scene(root));
 			primaryStage.show();
 			GUIController.refStage = primaryStage;
