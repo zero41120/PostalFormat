@@ -12,11 +12,10 @@ import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
 
 import util.FileManager;
-import util.ValidationException;
 import util.WordManager;
 
 public class PostalWordManager extends WordManager {
-
+	// Word did not work as excepted. Abort
 	public void createLabelAt(File workingDirectory, File workingFile) throws Exception {
 		PostalExcelManager eManager = new PostalExcelManager();
 		FileManager fManager = new FileManager();
@@ -34,19 +33,9 @@ public class PostalWordManager extends WordManager {
 		 * 
 		 */
 		
-		
-		
-
-
 		doc.write(out);
 		out.close();
 		doc.close();
-
-	}
-
-	@Override
-	public void validate(Object target) throws ValidationException {
-		// TODO Auto-generated method stub
 
 	}
 	
@@ -55,7 +44,7 @@ public class PostalWordManager extends WordManager {
 		XWPFParagraph p = doc.createParagraph();
 		XWPFRun r = p.createRun();
 		ArrayList<String> arr = eManager.getCellAsArrayString(row, 0, 10);
-		r.setText(FormatProvider.getPrintFormat(arr));
+		r.setText(arr.toString());
 		r.addBreak(BreakType.PAGE);
 		//r.setBold(true);
 		//r.setFontFamily("Courier");

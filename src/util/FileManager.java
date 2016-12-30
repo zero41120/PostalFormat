@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 
-public class FileManager extends Manager{
+public class FileManager implements Validatable{
 
 	@Override
 	public void validate(Object target) {
@@ -18,7 +18,7 @@ public class FileManager extends Manager{
 		if (!getExtension(myFile).equals(ext)) 
 			throw new ValidationException(myFile.getName()+"並非指定檔("+getExtension(myFile)+":"+ext+")");
 	}
-	
+		
 	public String getName(File target) {
 		String name = target.getName();
 		if (name.indexOf(".") > 0)
@@ -34,7 +34,7 @@ public class FileManager extends Manager{
 	public FileOutputStream getOutStreamAt(File workingDirectory, File workingFile, String ext) throws FileNotFoundException {
 		return getOutStreamAt(workingDirectory, getName(workingFile), ext);
 	}
-	
+
 	public FileOutputStream getOutStreamAt(File selectedDirectory, String name, String ext) throws FileNotFoundException{
 		File myFile = createFileAt(selectedDirectory, name, ext);
 		return new FileOutputStream(myFile);

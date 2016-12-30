@@ -8,7 +8,7 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-public abstract class ExcelManager extends Manager {
+public abstract class ExcelManager implements Validatable {
 
 	public void setCellWithArrayString(XSSFRow row, ArrayList<String> arr) {
 		for (int i = 0; i < arr.size(); i++) {
@@ -29,7 +29,7 @@ public abstract class ExcelManager extends Manager {
 		}
 		ArrayUtil<String> aUtil = new ArrayUtil<>();
 		
-		return aUtil.isAllEqual(data)? (new ArrayList<String>()) : data;
+		return aUtil.isAllEqual(data)? null : data;
 	}
 
 	public boolean isEqualCellArrayString(XSSFRow row, ArrayList<String> arr) {

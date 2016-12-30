@@ -34,13 +34,13 @@ public class GUIController implements Initializable{
 		System.out.println("Clicked Get Label");
 		DirectoryChooser chooser = new DirectoryChooser();
 		PostalFileManager fManager = new PostalFileManager();
-		PostalWordManager wManager = new PostalWordManager();
+		PostalPDFManager pManager = new PostalPDFManager();
 		
 		try {
 			fManager.validate(workingFile);
 			workingDirectory = chooser.showDialog(refStage);
 			fManager.validate(workingDirectory);
-			wManager.createLabelAt(workingDirectory, workingFile);
+			pManager.createLabelAt(workingDirectory, workingFile);
 			new AlertController("建立影印標籤成功", "建立於"+workingDirectory.getName(), AlertType.INFORMATION);
 
 		} catch (ValidationException e){
