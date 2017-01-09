@@ -17,8 +17,8 @@ public class GUIController implements Initializable{
 	final static String XMLFILE = "PostalGUI.fxml";
 	final static String TITLE = "郵政列印";
 	static Stage refStage = null;
-	static File workingDirectory = new File("C:/Users/Sean Lin/Desktop");
-	static File workingFile = new File("C:/Users/Sean Lin/Desktop/空白總表 .xlsx");
+	static File workingDirectory = null;
+	static File workingFile = null;
 	@FXML Button buttonGetEmpty, buttonBrowse, buttonGetLabel;
 
 	@Override
@@ -38,9 +38,9 @@ public class GUIController implements Initializable{
 		try {
 			PostalPDFManager pManager = new PostalPDFManager(workingFile);
 			fManager.validate(workingFile);
-			//workingDirectory = chooser.showDialog(refStage);
+			workingDirectory = chooser.showDialog(refStage);
 			fManager.validate(workingDirectory);
-			pManager.createLabelAt(workingDirectory);
+			pManager.createLabelAt(workingDirectory, false);
 			new AlertController("建立影印標籤成功", "建立於"+workingDirectory.getName(), AlertType.INFORMATION);
 
 		} catch (ValidationException e){

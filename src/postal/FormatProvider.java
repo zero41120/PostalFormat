@@ -6,8 +6,8 @@ import util.PDFManager;
 
 public class FormatProvider {
 
-	private final static float MMLABLEWIDTH = 208;
-	private final static float MMLABLEHEIGHT = 114;
+	final static float MMLABLEWIDTH = 208;
+	final static float MMLABLEHEIGHT = 114;
 	private final static float MMASPT = 4;
 	
 	public static ArrayList<String> getFirstRow() {
@@ -38,22 +38,22 @@ public class FormatProvider {
 			default: throw new IndexOutOfBoundsException();
 		}
 	}
-	public static float getYOffset(Integer i){
+	public static float getYOffset(Integer i, float topMM){
 		float baseS = 19f;
 		float baseR = 47f;
 		float l = 6.5f;
 		float d = 9f;
 		switch (i) {
-			case  0: return downOffset(i, baseS );
-			case  1: return downOffset(i, baseS + l);
-			case  2: return downOffset(i, baseS + l * 2);
+			case  0: return downOffset(i, baseS , topMM);
+			case  1: return downOffset(i, baseS + l, topMM);
+			case  2: return downOffset(i, baseS + l * 2, topMM);
 			case  3: case  4: 
-				return downOffset(i, baseS + l * 3);
-			case  5: return downOffset(i, baseR );
-			case  6: return downOffset(i, baseR + d );
-			case  7: return downOffset(i, baseR + d * 2);
+				return downOffset(i, baseS + l * 3, topMM);
+			case  5: return downOffset(i, baseR , topMM);
+			case  6: return downOffset(i, baseR + d , topMM);
+			case  7: return downOffset(i, baseR + d * 2, topMM);
 			case  8: case  9: 
-				return downOffset(i, baseR + d * 3);
+				return downOffset(i, baseR + d * 3, topMM);
 			default: throw new IndexOutOfBoundsException();
 		}
 	}
@@ -73,8 +73,8 @@ public class FormatProvider {
 		}
 	}
 	
-	private static float downOffset(int whitchItem, float offsetMM) {
-		float top = PDFManager.mm2pt(PDFManager.MMA4HEIGHT);
+	private static float downOffset(int whitchItem, float offsetMM, float topMM) {
+		float top = PDFManager.mm2pt(topMM);
 		top -= getFontSize(whitchItem);
 		top -= PDFManager.mm2pt(offsetMM);
 		return top;
