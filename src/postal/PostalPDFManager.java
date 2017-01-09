@@ -8,63 +8,106 @@ import java.util.ArrayList;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
-import org.apache.pdfbox.pdmodel.common.PDRectangle;
-import org.apache.pdfbox.pdmodel.font.PDType0Font;
+import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 
-import util.FileManager;
 import util.PDFManager;
 
 public class PostalPDFManager extends PDFManager {
-
-	private static PDType0Font font = null;
-	private static float mmLabelWidth = 208;
-	private static float mmLabelHight = 114;
-
-	public void createLabelAt(File workingDirectory, File workingFile) throws Exception {
-		PostalExcelManager eManager = new PostalExcelManager();
-		FileManager fManager = new FileManager();
-		FileOutputStream out = fManager.getOutStreamAt(workingDirectory, workingFile, ".pdf");
-		XSSFSheet sheet = eManager.getSheet(workingFile);
-
-		PDDocument doc = new PDDocument();
-		font = defaultFont(doc);
-		for (int i = 1; i < sheet.getLastRowNum(); i++) {
-			createPage(doc, sheet.getRow(i));
+	
+	class PostalText{
+		float x, y;
+		String text;
+		int size;
+		public PostalText(float myX, float myY, int mySize,String myText) {
+			x = myX;
+			y = myY;
+			size = mySize;
+			text = myText;
 		}
-
+		public String toString() {
+			return "\n(" + x + "," + y + "," + text + ")";
+		}
+	}
+	File myExcelFile;
+	XSSFSheet mySheet;
+	ArrayList<PostalText> locationArray;
+	float nextOffset;
+	public PostalPDFManager(File workingFile) throws Exception {
+		PostalExcelManager eManager = new PostalExcelManager();
+		myExcelFile = workingFile;
+		mySheet = eManager.getSheet(myExcelFile);
+		locationArray = new ArrayList<>();
+		initQueue();
+		nextOffset = 0;
+	}
+	
+	private void initQueue() {
+		PostalExcelManager eManager = new PostalExcelManager();
+		for (int i = 1; i < mySheet.getLastRowNum(); i++) {
+			XSSFRow row = mySheet.getRow(i);
+			ArrayList<String> myArray = eManager.getCellAsArrayString(row, 0, 10);
+			for (int j = 0; j < myArray.size(); j++) {
+				PostalText text = new PostalText(
+						FormatProvider.getXOffset(j),
+						FormatProvider.getYOffset(j),
+						FormatProvider.getFontSize(j),
+						myArray.get(j)
+				);
+				locationArray.add(text);
+			}
+			locationArray.add(new PostalText(0, 0, 0, "------"));
+		}
+	}
+	public void createLabelAt(File workingDirectory) throws IOException {
+		PDDocument doc = new PDDocument();
+		PostalFileManager fManager = new PostalFileManager();
+		FileOutputStream out = fManager.getOutStreamAt(workingDirectory, myExcelFile, ".pdf");
+		PDFont font = defaultFont(doc);
+		PDPage page = super.makeA4Page();
+		doc.addPage(page);
+		PDPageContentStream contents = new PDPageContentStream(doc, page);
+		System.out.println(locationArray);
+		System.out.println("m4h:" + mm2pt(MMA4HEIGHT));
+		
+		for (int i = 0; i < locationArray.size(); i++) {
+			PostalText myText = locationArray.get(i);
+			if(myText.size == 0) {
+				nextOffset += 120;
+				continue;
+			} 
+			if(myText.y - mm2pt(nextOffset) < 0) {
+				contents.beginText();
+				contents.setFont(font, 12);
+				contents.newLineAtOffset(myText.x, myText.y - mm2pt(nextOffset));
+				contents.showText(myText.text);
+				contents.endText();	
+				
+				System.out.println(myText);
+				System.out.println(myText.y - mm2pt(nextOffset));
+				System.out.println(pt2mm(myText.y - mm2pt(nextOffset)));
+				System.out.println(nextOffset);
+				nextOffset = pt2mm(myText.y) - MMA4HEIGHT - pt2mm(myText.y - mm2pt(nextOffset));
+				System.out.println(nextOffset);
+				
+				contents.close();
+				page = super.makeA4Page();
+				doc.addPage(page);
+				contents = new PDPageContentStream(doc, page);
+			} 
+			contents.beginText();
+			contents.setFont(font, 12);
+			contents.newLineAtOffset(myText.x, myText.y - mm2pt(nextOffset));
+			contents.showText(myText.text);
+			contents.endText();	
+			
+			
+		}
+		contents.close();
 		doc.save(out);
 		out.close();
 		doc.close();
-
 	}
-
-	private void createPage(PDDocument doc, XSSFRow row) throws Exception {
-		PostalExcelManager eManager = new PostalExcelManager();
-		ArrayList<String> arr = eManager.getCellAsArrayString(row, 0, 10);
-		if (arr != null) {
-			PDRectangle size = new PDRectangle(PDFManager.mm2pt(mmLabelWidth), PDFManager.mm2pt(mmLabelHight));
-			PDPage p = new PDPage(size);
-			doc.addPage(p);
-			PDPageContentStream contents = new PDPageContentStream(doc, p);
-			this.setContent(arr, contents);
-			contents.close();
-
-		}
-	}
-
-	private void setContent(ArrayList<String> arr, PDPageContentStream contents) throws IOException {
-		for (int i = 0; i < arr.size(); i++) {
-			contents.beginText();
-			contents.setFont(font, 12);
-			contents.newLineAtOffset(
-					FormatProvider.getXOffset(i),
-					FormatProvider.getYOffset(i));
-			System.out.println(arr.get(i));
-			contents.showText(arr.get(i));
-			contents.endText();
-		}
-	}
-
+	
 }
