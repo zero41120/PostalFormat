@@ -137,12 +137,15 @@ public class PostalPDFManager extends PDFManager {
 		PDPage page = makePage(FormatProvider.MMLABLEWIDTH, FormatProvider.MMLABLEHEIGHT);
 		doc.addPage(page);
 		PDPageContentStream contents = new PDPageContentStream(doc, page);
-		for (PostalText postalText : locationArray) {
+		for (int i = 0; i < locationArray.size(); i++) {
+			PostalText postalText = locationArray.get(i);
 			if (postalText.size == 0) {
+				if(i == locationArray.size() - 1) break;
 				contents.close();
 				page = makePage(FormatProvider.MMLABLEWIDTH, FormatProvider.MMLABLEHEIGHT);
 				doc.addPage(page);
 				contents = new PDPageContentStream(doc, page);
+				continue;
 			}
 			contents.beginText();
 			contents.setFont(font, postalText.size);
